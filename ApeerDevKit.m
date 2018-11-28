@@ -3,11 +3,12 @@ classdef ApeerDevKit < handle
     %   Reads the inputs from the APEER environment and takes care of correctly
     %   writing back your outputs. Please note that you have to be aware of the
     %   in- and output-keys in your module_specification. These are the keys
-    %   used to access the returne input struct as well as the names of the
+    %   used to access the returned input struct as well as the names of the
     %   fields in the output struct.
     
     properties
         output_params_file
+        output_struct = struct();
     end
     
     methods
@@ -20,6 +21,8 @@ classdef ApeerDevKit < handle
             %   Inputs are returned as a struct containing all inputs as fields
             %   with their respective data type as specified in the
             %   module_specification.
+            
+            fprintf('Reading inputs...\n');
             
             input_json = getenv('WFE_INPUT_JSON');
             if isempty(input_json)
@@ -36,18 +39,31 @@ classdef ApeerDevKit < handle
             catch ex
                 error('Could not decode input_json: %s\n', getReport(ex));
             end
+        end
+        
+        function set_output(obj, output_key, output_value)
+            error('Function not yet implemented');
+        end
+        
+        function set_file_output(obj, output_key, output_file_path)
+            error('Function not yet implemented');
+        end
+        
+        function finalize(obj)
             
-            function set_output(obj, output_key, output_value)
-                error('Function not yet implemented');
+            fprintf('Writing output_struct...\n');
+            disp(obj.output_struct);
+            
+            try
+                output_json = jsonencode(obj.output_struct);
+                fprintf('Encoded output_json: %s\n', output_json);
+            catch ex
+                error('Could not encode output_struct: %s\n', getReport(ex));
             end
             
-            function set_file_output(obj, output_key, output_file_path)
-                error('Function not yet implemented');
-            end
-            
-            function finalize(obj)
-                error('Function not yet implemented');
-            end
+            output_json_file = fopen(obj.output_params_file, 'w');
+            fprintf(output_json_file, output_json);
+            fclose(output_json_file);
         end
     end
 end
