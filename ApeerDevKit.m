@@ -1,10 +1,14 @@
-classdef ApeerDevKit
+classdef ApeerDevKit < handle
     %ApeerDevKit SDK for creating MATLAB modules on https://www.apeer.com
     %   Reads the inputs from the APEER environment and takes care of correctly
     %   writing back your outputs. Please note that you have to be aware of the
     %   in- and output-keys in your module_specification. These are the keys
     %   used to access the returne input struct as well as the names of the
     %   fields in the output struct.
+    
+    properties
+        output_params_file
+    end
     
     methods
         function obj = ApeerDevKit()
@@ -26,6 +30,7 @@ classdef ApeerDevKit
             
             try
                 inputs_struct = jsondecode(input_json);
+                obj.output_params_file = inputs_struct.WFE_output_params_file;
                 fprintf('Decoded WFE_INPUT_JSON to\n');
                 disp(inputs_struct);
             catch ex
