@@ -67,11 +67,22 @@ classdef ApeerDevKit < handle
             out_params_path = sprintf("/output/%s", obj.output_params_file);
             if (obj.args.debug == 1)
                 out_params_path = sprintf("./%s", obj.output_params_file);
+            else
+                [status, message] = mkdir("/output");
+                if status == 0
+                    error("Could not create folder /output: %s", message);
+                end
             end
             
             output_json_file = fopen(out_params_path, "w");
+            if (output_json_file == -1)
+                error("Could not write to file %s. File could not be opened.", out_params_path);
+            end
             fprintf(output_json_file, output_json);
-            fclose(output_json_file);
+            status = fclose(output_json_file);
+            if (status == -1)
+                error("Could not write to file %s. File could not be closed.", out_params_path);
+            end
         end
     end
     
