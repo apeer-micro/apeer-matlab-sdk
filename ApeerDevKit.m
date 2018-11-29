@@ -59,7 +59,6 @@ classdef ApeerDevKit < handle
             
             try
                 output_json = jsonencode(obj.output_struct);
-                fprintf("Encoded output_json: %s\n", output_json);
             catch ex
                 error("Could not encode output_struct: %s\n", getReport(ex));
             end
@@ -83,6 +82,8 @@ classdef ApeerDevKit < handle
             if (status == -1)
                 error("Could not write to file %s. File could not be closed.", out_params_path);
             end
+            fprintf("Generated output params file %s\n", out_params_path);
+            fprintf("with content:\n    %s\n", output_json);
         end
     end
     
