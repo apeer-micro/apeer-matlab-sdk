@@ -46,7 +46,7 @@ classdef ApeerDevKit < handle
         end
         
         function set_output(obj, output_key, output_value)
-            error("Function not yet implemented");
+            obj.output_struct.(output_key) = output_value;
         end
         
         function set_file_output(obj, output_key, output_file_path)
