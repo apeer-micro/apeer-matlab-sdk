@@ -1,5 +1,6 @@
 # APEER Matlab SDK
 
+[![Build Status](https://travis-ci.com/apeer-micro/apeer-matlab-sdk.svg?branch=master)](https://travis-ci.com/apeer-micro/apeer-matlab-sdk)
 [![License](https://img.shields.io/badge/Code%20License-MIT-blue.svg)](https://github.com/apeer-micro/apeer-matlab-sdk/blob/master/LICENSE)
 
 ## What it does
