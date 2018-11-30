@@ -13,17 +13,6 @@ cache:
     - $HOME/external_cache
 
 ###############################################################################
-env:
-  matrix:
-    - COVERAGE="false"
-    - COVERAGE="true"
-
-matrix:
-  allow_failures:
-    - env: COVERAGE="false"
-  fast_finish: true
-
-###############################################################################
 # Command to install dependencies
 before_install:
   # Remember the directory where our repository to test is located
@@ -102,17 +91,12 @@ before_script:
   # Check what octave packages we have installed
   - octave -q --eval "ver"
   # ---------------------------------------------------------------------------
-  # Remove any cached results files from previous build, if present
-  - rm -f testresults.xml;
-    rm -f coverage.xml;
-    rm -f .coverage;
-    rm -f coveralls.json;
-  # ---------------------------------------------------------------------------
 
 
 ###############################################################################
 script:
   - octave -q --eval "$ADDPATH_COMMAND $TEST_COMMAND";
+  - octave -q --eval "moxunit_runtests";
 
 ###############################################################################
 after_script:
