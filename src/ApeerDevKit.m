@@ -83,6 +83,7 @@ classdef ApeerDevKit < handle
                     if status == 0
                         error("[ADK] Could not move ""%s"" to ""%s"": %s", output_file_path, destination, message);
                     end
+                    output_file_path = destination;
                 end
             end
             
