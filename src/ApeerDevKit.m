@@ -25,7 +25,7 @@ classdef ApeerDevKit < handle
             if ~obj.args.debug
                 [status, message] = mkdir("/output");
                 if status == 0
-                    error("[ADK] Could not create folder /output: %s", message);
+                    warning("[ADK] Could not create folder /output: %s", message);
                 end
             end
             
@@ -44,7 +44,7 @@ classdef ApeerDevKit < handle
             wfe_input_json_key = "WFE_INPUT_JSON";
             input_json = getenv(wfe_input_json_key);
             if isempty(input_json)
-                error("[ADK] Could not find environment variable ""%s""", wfe_input_json_key);
+                error("adk:WfeInputJsonNotFound", "[ADK] Could not find environment variable ""%s""", wfe_input_json_key);
             end
             fprintf("[ADK] Found environment variable ""%s"":\n\n    %s\n\n", wfe_input_json_key, input_json);
             
@@ -58,7 +58,7 @@ classdef ApeerDevKit < handle
                 fprintf("[ADK] %s decoded to inputs structure:\n\n", wfe_input_json_key);
                 disp(inputs_struct);
             catch ex
-                error("[ADK] Could not decode input_json\n\n%s", getReport(ex));
+                error("adk:InvalidWfeInputJson", "[ADK] Could not decode input_json\n\n%s", getReport(ex));
             end
             
             fprintf("[ADK] #### Reading inputs done ####\n\n");
@@ -67,7 +67,22 @@ classdef ApeerDevKit < handle
         function set_output(obj, output_key, output_value)
             %set_output Assigns the given output_value to the given output_key
             
-            fprintf("[ADK] Setting output ""%s"" to ""%s""\n\n", output_key, output_value);
+            output_value_text = output_value;
+            
+            if islogical(output_value)
+                output_value_text = "false";
+                if output_value
+                    output_value_text = "true";
+                end
+            elseif iscell(output_value)
+                output_value_text = "[";
+                for i = 1:length(output_value)
+                    output_value_text = output_value_text + "" + output_value{i} + """;";
+                end
+                output_value_text = output_value_text.strip(';') + "]";
+            end
+            
+            fprintf("[ADK] Setting output ""%s"" to ""%s""\n\n", output_key, output_value_text);
             obj.output_struct.(output_key) = output_value;
         end
         
