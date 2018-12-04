@@ -5,7 +5,7 @@ classdef ApeerDevKitTests < matlab.unittest.TestCase
         %% initialize
         
         function adk_initialize_debugModeIsFalseByDefault(testCase)
-            adk = ApeerDevKit;
+            adk = ApeerDevKit();
             testCase.assertEqual(adk.args.debug, false);
         end
         
@@ -19,31 +19,46 @@ classdef ApeerDevKitTests < matlab.unittest.TestCase
             testCase.assertEqual(adk.args.debug, true);
         end
         
+        function adk_initialize_quietModeIsFalseByDefault(testCase)
+            adk = ApeerDevKit();
+            testCase.assertEqual(adk.args.quiet, false);
+        end
+        
+        function adk_initialize_quietModeIsTrueWhenQArgumentIsGiven(testCase)
+            adk = ApeerDevKit("-q");
+            testCase.assertEqual(adk.args.quiet, true);
+        end
+        
+        function adk_initialize_quietModeIsTrueWhenquietArgumentIsGiven(testCase)
+            adk = ApeerDevKit("--quiet");
+            testCase.assertEqual(adk.args.quiet, true);
+        end
+        
         %% get_inputs
         
         function adk_get_inputs_throwsErrorWhenWfeInputJsonNotFound(testCase)
-            adk = ApeerDevKit("-d");
+            adk = ApeerDevKit("-d", "-q");
             setenv("WFE_INPUT_JSON", "");
             
             testCase.assertError(@()adk.get_inputs(), "adk:WfeInputJsonNotFound");
         end
         
         function adk_get_inputs_throwsErrorWhenWfeInputJsonInWrongFormat(testCase)
-            adk = ApeerDevKit("-d");
+            adk = ApeerDevKit("-d", "-q");
             setenv("WFE_INPUT_JSON", "{{");
             
             testCase.assertError(@()adk.get_inputs(), "adk:InvalidWfeInputJson");
         end
         
         function adk_get_inputs_throwsErrorWhenWfeInputJsonMissesParamsFile(testCase)
-            adk = ApeerDevKit("-d");
+            adk = ApeerDevKit("-d", "-q");
             setenv("WFE_INPUT_JSON", "{}");
             
             testCase.assertError(@()adk.get_inputs(), "adk:InvalidWfeInputJson");
         end
         
         function adk_get_inputs_parsesWfeInputJsonWithCorrectDataTypes(testCase)
-            adk = ApeerDevKit("-d");
+            adk = ApeerDevKit("-d", "-q");
             setenv("WFE_INPUT_JSON", "{""WFE_output_params_file"":""out.json"",""aChar"":""ichbineintext"",""aNumber"":42, ""anArray"":[""value1"",""value2""], ""aBoolean"":true}");
             
             inputs_struct = adk.get_inputs();
@@ -57,7 +72,7 @@ classdef ApeerDevKitTests < matlab.unittest.TestCase
         end
         
         function adk_get_inputs_parsesWfeInputJsonWithCorrectValues(testCase)
-            adk = ApeerDevKit("-d");
+            adk = ApeerDevKit("-d", "-q");
             setenv("WFE_INPUT_JSON", "{""WFE_output_params_file"":""out.json"",""aChar"":""ichbineintext"",""aNumber"":42, ""anArray"":[""value1"",""value2""], ""aBoolean"":true}");
             
             inputs_struct = adk.get_inputs();
@@ -73,7 +88,7 @@ classdef ApeerDevKitTests < matlab.unittest.TestCase
         %% set_output
         
         function adk_set_output_addsOutputToOutputStructWithCorrectDataType(testCase)
-            adk = ApeerDevKit("-d");
+            adk = ApeerDevKit("-d", "-q");
             
             adk.set_output("aString", "ichbineintext");
             adk.set_output("aNumber", 47.11);
@@ -87,7 +102,7 @@ classdef ApeerDevKitTests < matlab.unittest.TestCase
         end
         
         function adk_set_output_addsOutputToOutputStructWithCorrectValue(testCase)
-            adk = ApeerDevKit("-d");
+            adk = ApeerDevKit("-d", "-q");
             
             adk.set_output("aString", "ichbineintext");
             adk.set_output("aNumber", 47.11);
@@ -103,7 +118,24 @@ classdef ApeerDevKitTests < matlab.unittest.TestCase
         
         %% set_file_output
         
-        % [WIP]
+        function adk_set_file_output_addsFilePathToOutputStruct(testCase)
+            adk = ApeerDevKit("-d", "-q");
+            
+            adk.set_file_output("out_file", "my_code.cpp");
+            
+            testCase.assertEqual(adk.output_struct.out_file, "my_code.cpp");
+        end
+        
+        %% set_multi_file_output
+        
+        function adk_set_file_output_addsMultipleFilePathsToOutputStruct(testCase)
+            adk = ApeerDevKit("-d", "-q");
+            
+            adk.set_multi_file_output("out_files", {"my_code.cpp", "my_code.h"});
+            
+            testCase.assertEqual(adk.output_struct.out_files{1}, "my_code.cpp");
+            testCase.assertEqual(adk.output_struct.out_files{2}, "my_code.h");
+        end
         
         %% finalize
         
