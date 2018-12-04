@@ -85,7 +85,7 @@ install:
 before_script:
   - TEST_ARGS="'-recursive', '-verbose', '-junit_xml_file', 'testresults.xml'";
     # TEST_COMMAND="exit(~moxunit_runtests('tests', $TEST_ARGS));";
-    TEST_COMMAND="run_tests"
+    TEST_COMMAND="exit(run_tests)"
     echo "TEST_COMMAND| $TEST_COMMAND";
   # Double-check we are still in the right directory
   - pwd
@@ -97,7 +97,6 @@ before_script:
 ###############################################################################
 script:
   - octave -q --eval "$ADDPATH_COMMAND $TEST_COMMAND";
-  - octave -q --eval "moxunit_runtests";
 
 ###############################################################################
 after_script:
