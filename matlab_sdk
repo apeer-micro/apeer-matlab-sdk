@@ -1,0 +1,24 @@
+%%%% apeer_main.m %%%%
+
+function [] = apeer_main(varargin)
+    adk = ApeerDevKit(varargin{:});
+    inputs = adk.get_inputs();
+
+    outputs = your_script(inputs.input_image);
+    
+    adk.set_output("success", outputs.success);
+    adk.set_file_output("equalized_image", outputs.equalized_image);
+    adk.finalize();
+end
+
+%%%% your_script.m %%%%
+
+function [outputs] = your_script(input_image_path)
+
+    % your processing code goes here ...
+
+    % Make sure you return the outputs as a structure containing all output
+    % values as specified for your APEER module as fields
+    outputs.success = true;
+    outputs.equalized_image = equalized_image_path;
+end
